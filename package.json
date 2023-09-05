@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-medium-image-zoom": "^5.1.6",
+    "react-redux": "^8.1.1"
+  }
+}
