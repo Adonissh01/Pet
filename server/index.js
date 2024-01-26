@@ -32,7 +32,7 @@ app.use("/api/users", userRoutes);
 //DB_PASS=anwGqbbLdcNPBhoy
 
 const mongodbUri = "mongodb+srv://adonisshaaban:anwGqbbLdcNPBhoy@cluster0.ziorhmy.mongodb.net/?retryWrites=true&w=majority";
-
+// const mongodbUri = "mongodb+srv://adonisshaaban:tllgbz3CGqeR6zWj@cluster0.5ebqlig.mongodb.net/"
 mongoose.connect(mongodbUri, {
   useNewUrlParser: true,
 });

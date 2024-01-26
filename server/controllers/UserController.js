@@ -7,31 +7,43 @@ const { error } = require("console");
 const jwt = require("jsonwebtoken");
 
 const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  try {
+    const token = jwt.sign({ id }, "hellofromthegdnodejscourse1234", {
+      expiresIn: "10h",
+    });
+    return token;
+  } catch (error) {
+    console.error('Error signing JWT:', error);
+    // Handle the error, possibly by sending an error response
+    throw error; // Rethrow the error for higher-level handling
+  }
 };
 
 const createSendToken = (user, statusCode, res, msg) => {
-  const token = signToken(user._id);
+  try {
+    const token = signToken(user._id);
 
-  res.status(statusCode).json({
-    status: "success",
-    token,
-    userID: user._id,
-    data: {
-      message: msg,
-      user,
-    },
-  });
+    res.status(statusCode).json({
+      status: "success",
+      token,
+      userID: user._id,
+      data: {
+        message: msg,
+        user,
+      },
+    });
+  } catch (error) {
+    // Handle the error, possibly by sending an error response
+    res.status(500).json({ status: 'error', message: 'Internal server error' });
+  }
 };
+
 
 // signup function
 exports.signingUp = async (req, res) => {
   try {
     //1-check if the email is already valid
     let email = req.body.email;
-
     if (!validator.isEmail(email)) {
       return res.status(400).json({ message: "email is not valid" });
     }
@@ -42,7 +54,7 @@ exports.signingUp = async (req, res) => {
         .status(400)
         .json({ message: "a user already signed in using this email" });
     }
-    //3- check if a user already signed in using the same username
+
  
     //4-check if the password and confirm password match
     let pass = req.body.password;
@@ -59,22 +71,19 @@ exports.signingUp = async (req, res) => {
       const newUser = await User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-       
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         password: hashedPassword,
         address: req.body.address
       });
-
-      // res
-      //   .status(201)
-      //   .json({ message: "User created succesfully.", data: { newUser } });
+console.log(newUser);
+      // return res.status(201).json({ message: "User created succesfully.", data: { newUser } });
       let msg = "User created successfully";
     createSendToken(newUser, 201, res, msg);
 
     }
   } catch (err) {
-    res.status(401).json({ message: error });
+  return  res.status(401).json({ message: "error" });
   }
 };
 
@@ -97,8 +106,7 @@ exports.signingIn = async (req, res) => {
       return res.status(404).json({ message: "Incorrect credentials." });
 
     } let msg = "You are logged in successfully";
-    createSendToken(user, 200, res, msg);
-    
+     createSendToken(user, 200, res, msg); 
   } catch (err) {
     console.log(err);
   }
